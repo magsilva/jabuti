@@ -1,0 +1,8 @@
+V[1.1:lookup]
+S[lookup:RClassCode,lookup:RClass]{2:(837,775),(869,347)}
+S[lookup:Program,java.io:Serializable]{2:(1314,456),(1257,281)}
+P[lookup:ClassClosure]{20,398,true,false}
+P[lookup:Program]{1148,456,true,false}
+P[lookup:RClass]{766,20,true,false}
+P[lookup:RClassCode]{715,775,true,false}
+P[java.io:Serializable]{1193,209,false,false}

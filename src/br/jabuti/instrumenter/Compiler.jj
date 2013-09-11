@@ -1,0 +1,1661 @@
+/*  Copyright 2003  Auri Marcelo Rizzo Vicenzi, Marcio Eduardo Delamaro, 			    Jose Carlos Maldonado
+
+    This file is part of Jabuti.
+
+    Jabuti is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as 
+    published by the Free Software Foundation, either version 3 of the      
+    License, or (at your option) any later version.
+
+    Jabuti is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with Jabuti.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+options {
+   JAVA_UNICODE_ESCAPE = false;
+   STATIC = false;
+   IGNORE_CASE = true;
+}
+
+PARSER_BEGIN(ASMParse)
+package br.jabuti.instrumenter;
+
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.Visitor;
+import java.util.*;
+import java.io.*;
+import br.jabuti.util.*;
+
+
+public class ASMParse 
+{
+ConstantPoolGen cpg;
+ClassGen clg;
+MethodGen meth;
+
+    public ASMParse(InputStream is, MethodGen m, ClassGen cg)
+    {
+        this(is);
+        cpg = m.getConstantPool();
+        clg = cg;
+        meth = m;
+    }
+
+
+}
+
+class FakeBranchInstruction extends BranchInstruction
+{
+BranchInstruction ri;
+Vector v;
+
+    FakeBranchInstruction(BranchInstruction ins, Vector x)
+    {
+        super(ins.getOpcode(), ins.getTarget());
+        ri = ins;
+        v = x;
+    }
+    
+    public void accept(Visitor v)
+    {
+    }
+
+    public String[] getTargets()
+    {
+        String[] t = new String[v.size()];
+        for (int i = 0; i < t.length; i++)
+            t[i] = (String) v.elementAt(i);
+        return t;
+    }    
+    
+    public BranchInstruction getRealInstruction()
+    {
+        return ri;
+    }
+}
+
+PARSER_END(ASMParse)
+
+SKIP :
+{
+   " "
+   | "\t"
+   | "\n"
+   | "\r"
+   | "\f"
+}
+
+
+
+
+TOKEN :
+{
+   <LPAREN: "(">
+   | <RPAREN: ")">
+   | <LBRACE: "{">
+   | <RBRACE: "}">
+   | <LBRACKET: "[">
+   | <RBRACKET: "]">
+   | <SEMICOLON: ";">
+   | <COMMA: ",">
+   | <DOT: ".">
+   | <ASSIGN: "=">
+}
+
+TOKEN :
+{
+    <GT: ">">
+   | <LT: "<">
+   | <HOOK: "?">
+   | <COLON: ":">
+   | <EQ: "==">
+   | <LE: "<=">
+   | <GE: ">=">
+   | <NE: "!=">
+   | <PLUS: "+">
+   | <MINUS: "-">
+   | <STAR: "*">
+   | <SLASH: "/">
+   | <REM: "%">
+   | <POWER: "**">
+}
+
+TOKEN :
+{
+	<FIELD: "field">
+	| 
+	<LOCAL: "local">
+	| 
+	<PRIVATE: "private">
+	| 
+	<PROTECTED: "protected">
+	| 
+	<PUBLIC: "public">
+}
+
+TOKEN:
+{
+    <DEFAUL : "default" >
+    |
+    <CASE : "case">
+}
+
+ 
+TOKEN:
+{            
+    <AALOAD : "AALOAD">
+    |
+    <AASTORE : "AASTORE">
+    | 
+    <ACONST_NULL : "ACONST_NULL">
+    |
+    <ALOAD : "ALOAD">
+    | 
+    <ALOAD_0 : "ALOAD_0" >
+    | 
+    <ALOAD_1 : "ALOAD_1" >
+    | 
+    <ALOAD_2 : "ALOAD_2" >
+    | 
+    <ANEWARRAY : "ANEWARRAY" >
+    |
+    <ARETURN : "ARETURN" > 
+    | 
+    <ARRAYLENGTH : "ARRAYLENGTH" >
+    | 
+    <ASTORE : "ASTORE" >
+    | 
+    <ASTORE_0 : "ASTORE_0" >
+    | 
+    <ASTORE_1 : "ASTORE_1" >
+    | 
+    <ASTORE_2 : "ASTORE_2" > 
+    | 
+    <ATHROW : "ATHROW" > 
+    | 
+    <BALOAD : "BALOAD" > 
+    | 
+    <BASTORE : "BASTORE" > 
+    | 
+    <BIPUSH : "BIPUSH" >
+    | 
+    <BREAKPOINT : "BREAKPOINT" >
+    | 
+    <CALOAD : "CALOAD" > 
+    | 
+    <CASTORE : "CASTORE" > 
+    | 
+    <CHECKCAST : "CHECKCAST" >
+    | 
+    <D2F : "D2F" > 
+    | 
+    <D2I : "D2I" > 
+    | 
+    <D2L : "D2L" > 
+    | 
+    <DADD : "DADD" > 
+    | 
+    <DALOAD : "DALOAD" > 
+    | 
+    <DASTORE : "DASTORE" > 
+    | 
+    <DCMPG : "DCMPG" > 
+    | 
+    <DCMPL : "DCMPL" > 
+    | 
+    <DCONST : "DCONST" > 
+    | 
+    <DCONST_0 : "DCONST_0" > 
+    | 
+    <DCONST_1 : "DCONST_1" > 
+    | 
+    <DDIV : "DDIV" > 
+    | 
+    <DLOAD : "DLOAD" > 
+    | 
+    <DMUL : "DMUL" > 
+    | 
+    <DNEG : "DNEG" > 
+    | 
+    <DREM : "DREM" > 
+    | 
+    <DRETURN : "DRETURN" > 
+    | 
+    <DSUB : "DSUB" > 
+    | 
+    <DUP : "DUP" > 
+    | 
+    <DUP_X1 : "DUP_X1" > 
+    | 
+    <DUP_X2 : "DUP_X2" > 
+    | 
+    <DUP2 : "DUP2" > 
+    | 
+    <DUP2_X1 : "DUP2_X1" > 
+    | 
+    <DUP2_X2 : "DUP2_X2" > 
+    | 
+    <F2D : "F2D" > 
+    | 
+    <F2I : "F2I" > 
+    | 
+    <F2L : "F2L" > 
+    | 
+    <FADD : "FADD" > 
+    | 
+    <FALOAD : "FALOAD" > 
+    | 
+    <FASTORE : "FASTORE" > 
+    | 
+    <FCMPG : "FCMPG" >
+    | 
+    <FCMPL : "FCMPL" > 
+    | 
+    <FCONST : "FCONST" > 
+    | 
+    <FCONST_0 : "FCONST_0" > 
+    | 
+    <FCONST_1 : "FCONST_1" > 
+    | 
+    <FCONST_2 : "FCONST_2" > 
+    | 
+    <FDIV : "FDIV" > 
+    | 
+    <FLOAD : "FLOAD" > 
+    | 
+    <FMUL : "FMUL" > 
+    | 
+    <FNEG : "FNEG" > 
+    | 
+    <FREM : "FREM" > 
+    | 
+    <FRETURN : "FRETURN" > 
+    | 
+    <FSTORE : "FSTORE" > 
+    | 
+    <FSUB : "FSUB" > 
+    | 
+    <GETFIELD : "GETFIELD" > 
+    | 
+    <GETSTATIC : "GETSTATIC" > 
+    | 
+    <GOTO : "GOTO" > 
+    | 
+    <GOTO_W : "GOTO_W" > 
+    | 
+    <I2B : "I2B" > 
+    | 
+    <I2C : "I2C" > 
+    | 
+    <I2D : "I2D" > 
+    | 
+    <I2F : "I2F" > 
+    | 
+    <I2L : "I2L" > 
+    | 
+    <I2S : "I2S" > 
+    | 
+    <IADD : "IADD" > 
+    | 
+    <IALOAD : "IALOAD" > 
+    | 
+    <IAND : "IAND" >
+    | 
+    <IASTORE : "IASTORE" > 
+    | 
+    <ICONST : "ICONST" > 
+    | 
+    <ICONST_0 : "ICONST_0" > 
+    | 
+    <ICONST_1 : "ICONST_1" > 
+    | 
+    <ICONST_2 : "ICONST_2" > 
+    | 
+    <ICONST_3 : "ICONST_3" > 
+    | 
+    <ICONST_4 : "ICONST_4" > 
+    | 
+    <ICONST_5 : "ICONST_5" > 
+    | 
+    <ICONST_M1 : "ICONST_M1" > 
+    | 
+    <IDIV : "IDIV" > 
+    | 
+    <IF_ACMPEQ : "IF_ACMPEQ" >
+    |
+    <IF_ACMPNE : "IF_ACMPNE" >
+    |
+    <IF_ICMPEQ : "IF_ICMPEQ" >
+    |
+    <IF_ICMPGE : "IF_ICMPGE" >
+    |
+    <IF_ICMPGT : "IF_ICMPGT" >
+    |
+    <IF_ICMPLE : "IF_ICMPLE" >
+    |
+    <IF_ICMPLT : "IF_ICMPLT" >
+    |
+    <IF_ICMPNE : "IF_ICMPNE" >
+    |
+    <IFEQ : "IFEQ" >
+    |
+    <IFGE : "IFGE" >
+    |
+    <IFGT : "IFGT" >
+    |
+    <IFLE : "IFLE" >
+    |
+    <IFLT : "IFLT" >
+    |
+    <IFNE : "IFNE" >
+    |
+    <IFNONNULL : "IFNONNULL" >
+    |
+    <IFNULL : "IFNULL" >
+    |
+    <IINC : "IINC" >
+    |
+    <ILOAD : "ILOAD" > 
+    | 
+    <ILOAD_0 : "ILOAD_0" > 
+    | 
+    <ILOAD_1 : "ILOAD_1" > 
+    | 
+    <ILOAD_2 : "ILOAD_2" > 
+    | 
+    <IMPDEP_1 : "IMPDEP_1" > 
+    | 
+    <IMPDEP_2 : "IMPDEP_2" > 
+    | 
+    <IMUL : "IMUL" > 
+    | 
+    <INEG : "INEG" > 
+    | 
+    <INSTANCEOF : "INSTANCEOF" > 
+    | 
+    <INVOKEINTERFACE : "INVOKEINTERFACE" >
+    |
+    <INVOKESPECIAL : "INVOKESPECIAL" >
+    |
+    <INVOKESTATIC : "INVOKESTATIC" >
+    |
+    <INVOKEVIRTUAL : "INVOKEVIRTUAL" >
+    |
+    <IOR : "IOR" >
+    |
+    <IREM : "IREM" > 
+    | 
+    <IRETURN : "IRETURN" > 
+    | 
+    <ISHL : "ISHL" > 
+    | 
+    <ISHR : "ISHR" > 
+    | 
+    <ISTORE : "ISTORE" > 
+    | 
+    <ISTORE_0 : "ISTORE_0" > 
+    | 
+    <ISTORE_1 : "ISTORE_1" > 
+    | 
+    <ISTORE_2 : "ISTORE_2" > 
+    | 
+    <ISUB : "ISUB" > 
+    | 
+    <IUSHR : "IUSHR" > 
+    | 
+    <IXOR : "IXOR" > 
+    | 
+    <JSR : "JSR" > 
+    | 
+    <JSR_W : "JSR_W" > 
+    | 
+    <L2D : "L2D" > 
+    | 
+    <L2F : "L2F" > 
+    | 
+    <L2I : "L2I" > 
+    | 
+    <LADD : "LADD" > 
+    | 
+    <LALOAD : "LALOAD" > 
+    | 
+    <LAND : "LAND" > 
+    | 
+    <LASTORE : "LASTORE" > 
+    | 
+    <LCMP : "LCMP" > 
+    | 
+    <LCONST : "LCONST" > 
+    | 
+    <LCONST_0 : "LCONST_0" > 
+    | 
+    <LCONST_1 : "LCONST_1" > 
+    | 
+    <LDC : "LDC" > 
+    | 
+    <LDC_W : "LDC_W" > 
+    | 
+    <LDC2_W : "LDC2_W" > 
+    | 
+    <LDIV : "LDIV" > 
+    | 
+    <LLOAD : "LLOAD" > 
+    | 
+    <LMUL : "LMUL" > 
+    | 
+    <LNEG : "LNEG" > 
+    | 
+    <LOOKUPSWITCH : "LOOKUPSWITCH" > 
+    | 
+    <LOR : "LOR" > 
+    | 
+    <LREM : "LREM" > 
+    | 
+    <LRETURN : "LRETURN" > 
+    | 
+    <LSHL : "LSHL" > 
+    | 
+    <LSHR : "LSHR" > 
+    | 
+    <LSTORE : "LSTORE" > 
+    | 
+    <LSUB : "LSUB" > 
+    | 
+    <LUSHR : "LUSHR" > 
+    | 
+    <LXOR : "LXOR" > 
+    | 
+    <MONITORENTER : "MONITORENTER" > 
+    | 
+    <MONITOREXIT : "MONITOREXIT" > 
+    | 
+    <MULTIANEWARRAY : "MULTIANEWARRAY" > 
+    | 
+    <NEW : "NEW" > 
+    | 
+    <NEWARRAY : "NEWARRAY" > 
+    | 
+    <NOP : "NOP" > 
+    | 
+    <POP : "POP" > 
+    | 
+    <POP2 : "POP2" > 
+    | 
+    <PUSH : "PUSH" >
+    |
+    <PUTFIELD : "PUTFIELD" > 
+    | 
+    <PUTSTATIC : "PUTSTATIC" > 
+    | 
+    <RET : "RET" > 
+    | 
+    <RETURN : "RETURN" > 
+    | 
+    <SALOAD : "SALOAD" > 
+    | 
+    <SASTORE : "SASTORE" > 
+    | 
+    <SIPUSH : "SIPUSH" > 
+    | 
+    <SWAP : "SWAP" > 
+    |
+    <TABLESWITCH : "TABLESWITCH" > 
+    |
+    <WIDE: "WIDE" >
+}
+
+TOKEN :
+{
+   <FIXED_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])+ >
+   |
+   <INTEGER_LITERAL: (["0"-"9"])+>
+   |
+   <STRING_LITERAL: "\"" ((~["\"", "\\", "\n", "\r"]) | ("\\" (["n", "t", "b", "r", "f", "\\", "'", "\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"])))* "\"">
+}
+
+TOKEN :
+{
+   <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
+   | <#LETTER: ["A"-"Z", "_", "a"-"z"]>
+   | <#DIGIT: ["0"-"9"]>
+   | <PARAM: "#" (<DIGIT>)+ >
+}
+
+InstructionList ASMProg() :
+{
+InstructionList v = new InstructionList();
+Hashtable l2inst = new Hashtable(),
+          hand2l = new Hashtable();
+Instruction ins = null;
+String s = null;
+Token t;
+}
+{
+    (
+        { s = null; }
+        [ LOOKAHEAD(2) t = <IDENTIFIER> <COLON> {s = t.image;} ]
+        ins = ASMInstruction() 
+            {
+                 InstructionHandle ih;
+                 if ( ins instanceof FakeBranchInstruction )
+                 {
+                    FakeBranchInstruction fbi = (FakeBranchInstruction) ins;
+                    ih = v.append(fbi.getRealInstruction());
+                    String[] p = fbi.getTargets();
+                    hand2l.put(ih, p);
+                 }
+                 else
+                    ih = v.append(ins);
+                 if (s != null)
+                    l2inst.put(s, ih);
+            } 
+         |
+         directive() 
+    )*
+    <EOF> { 
+            Enumeration en = hand2l.keys();
+            while (en.hasMoreElements())
+            {
+                InstructionHandle ih = (InstructionHandle) en.nextElement();
+                String[] p = (String []) hand2l.get(ih);
+                InstructionHandle targ = (InstructionHandle) l2inst.get(p[0]);
+                if ( targ == null )
+                    throw new ParseException("Label " + p[0] + " not found");
+                ((BranchInstruction) ih.getInstruction()).setTarget(targ);
+                if (ih.getInstruction() instanceof Select)
+                {
+                    for (int i = 1; i < p.length; i++)
+                    {
+                        targ = (InstructionHandle) l2inst.get(p[i]);
+                        if ( targ == null )
+                            throw new ParseException("Label " + p[i] + " not found");
+                        ((Select) ih.getInstruction()).setTarget(i-1, targ);
+                    }
+                }
+            }
+            return v;
+     }
+}
+
+
+Instruction ASMInstruction():
+{
+Instruction ins = null;
+Token w = null;
+}
+{
+    ins = UnlabeledInstruction()
+    {
+        return ins;
+    }
+}
+
+
+Instruction UnlabeledInstruction() :
+{
+Vector v = new Vector(),
+       v1 = new Vector();
+Token t1, t2, t3;
+String s;
+}
+{
+   (
+    <AALOAD> { return InstructionConstants.AALOAD  ;}
+    |
+    <AASTORE> { return InstructionConstants.AASTORE  ;}
+    | 
+    <ACONST_NULL> { return InstructionConstants.ACONST_NULL  ;}
+    |
+    <ALOAD>  t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new ALOAD(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid ALOAD argument: " + t1.image);
+            }
+        }
+    | 
+    <ALOAD_0> { return InstructionConstants.ALOAD_0  ;}
+    | 
+    <ALOAD_1> { return InstructionConstants.ALOAD_1  ;}
+    | 
+    <ALOAD_2> { return InstructionConstants.ALOAD_2  ;}
+    | 
+    <ANEWARRAY> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new ANEWARRAY(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid ANEWARRAY argument: " + t1.image);
+            }
+        }
+    |
+    <ARETURN>  { return InstructionConstants.ARETURN  ;}
+    | 
+    <ARRAYLENGTH> { return InstructionConstants.ARRAYLENGTH  ;}
+    | 
+    <ASTORE> t1 = <INTEGER_LITERAL> 
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new ASTORE(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid ASTORE argument: " + t1.image);
+            }
+        }
+    | 
+    <ASTORE_0> { return InstructionConstants.ASTORE_0  ;}
+    | 
+    <ASTORE_1> { return InstructionConstants.ASTORE_1  ;}
+    | 
+    <ASTORE_2>  { return InstructionConstants.ASTORE_2  ;}
+    | 
+    <ATHROW>  { return InstructionConstants.ATHROW  ;}
+    | 
+    <BALOAD>  { return InstructionConstants.BALOAD  ;}
+    | 
+    <BASTORE>  { return InstructionConstants.BASTORE  ;}
+    | 
+    <BIPUSH> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                byte k = Byte.parseByte(t1.image);
+                return new BIPUSH(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid BIPUSH argument: " + t1.image);
+            }
+        }
+    | 
+    <BREAKPOINT> { return new BREAKPOINT()  ;}
+    | 
+    <CALOAD>  { return InstructionConstants.CALOAD  ;}
+    | 
+    <CASTORE>  { return InstructionConstants.CASTORE  ;}
+    | 
+    <CHECKCAST> s = classname()
+        {
+            {
+            int k = cpg.addClass(s);
+            return new CHECKCAST(k);
+            }
+        }
+    | 
+    <D2F>  { return InstructionConstants.D2F  ;}
+    | 
+    <D2I>  { return InstructionConstants.D2I  ;}
+    | 
+    <D2L>  { return InstructionConstants.D2L  ;}
+    | 
+    <DADD>  { return InstructionConstants.DADD  ;}
+    | 
+    <DALOAD>  { return InstructionConstants.DALOAD  ;}
+    | 
+    <DASTORE>  { return InstructionConstants.DASTORE  ;}
+    | 
+    <DCMPG>  { return InstructionConstants.DCMPG  ;}
+    | 
+    <DCMPL>  { return InstructionConstants.DCMPL  ;}
+    | 
+    <DCONST>  t1 = <FIXED_POINT_LITERAL>
+        { 
+            try
+            {
+                double k = Double.parseDouble(t1.image);
+                return new DCONST(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid DCONST argument: " + t1.image);
+            }
+        }
+    | 
+    <DCONST_0>  { return InstructionConstants.DCONST_0  ;}
+    | 
+    <DCONST_1>  { return InstructionConstants.DCONST_1  ;}
+    | 
+    <DDIV>  { return InstructionConstants.DDIV  ;}
+    | 
+    <DLOAD>  t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new DLOAD(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid DLOAD argument: " + t1.image);
+            }
+        }
+    | 
+    <DMUL>  { return InstructionConstants.DMUL  ;}
+    | 
+    <DNEG>  { return InstructionConstants.DNEG  ;}
+    | 
+    <DREM>  { return InstructionConstants.DREM  ;}
+    | 
+    <DRETURN>  { return InstructionConstants.DRETURN  ;}
+    | 
+    <DSUB>  { return InstructionConstants.DSUB  ;}
+    | 
+    <DUP>  { return InstructionConstants.DUP  ;}
+    | 
+    <DUP_X1>  { return InstructionConstants.DUP_X1  ;}
+    | 
+    <DUP_X2>  { return InstructionConstants.DUP_X2  ;}
+    | 
+    <DUP2>  { return InstructionConstants.DUP2  ;}
+    | 
+    <DUP2_X1>  { return InstructionConstants.DUP2_X1  ;}
+    | 
+    <DUP2_X2>  { return InstructionConstants.DUP2_X2  ;}
+    | 
+    <F2D>  { return InstructionConstants.F2D  ;}
+    | 
+    <F2I>  { return InstructionConstants.F2I  ;}
+    | 
+    <F2L>  { return InstructionConstants.F2L  ;}
+    | 
+    <FADD>  { return InstructionConstants.FADD  ;}
+    | 
+    <FALOAD>  { return InstructionConstants.FALOAD  ;}
+    | 
+    <FASTORE>  { return InstructionConstants.FASTORE  ;}
+    | 
+    <FCMPG> { return InstructionConstants.FCMPG  ;}
+    | 
+    <FCMPL>  { return InstructionConstants.FCMPL  ;}
+    | 
+    <FCONST>  t1 = <FIXED_POINT_LITERAL>
+        { 
+            try
+            {
+                float k = Float.parseFloat(t1.image);
+                return new FCONST(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid FCONST argument: " + t1.image);
+            }
+        }
+    | 
+    <FCONST_0>  { return InstructionConstants.FCONST_0  ;}
+    | 
+    <FCONST_1>  { return InstructionConstants.FCONST_1  ;}
+    | 
+    <FCONST_2>  { return InstructionConstants.FCONST_2  ;}
+    | 
+    <FDIV>  { return InstructionConstants.FDIV  ;}
+    | 
+    <FLOAD> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new FLOAD(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid FLOAD argument: " + t1.image);
+            }
+        }
+    | 
+    <FMUL>  { return InstructionConstants.FMUL  ;}
+    | 
+    <FNEG>  { return InstructionConstants.FNEG  ;}
+    | 
+    <FREM>  { return InstructionConstants.FREM  ;}
+    | 
+    <FRETURN>  { return InstructionConstants.FRETURN  ;}
+    | 
+    <FSTORE>  t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new FSTORE(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid FSTORE argument: " + t1.image);
+            }
+        }
+    | 
+    <FSUB>  { return InstructionConstants.FSUB  ;}
+    | 
+    <GETFIELD>  s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+        {
+            {
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addFieldref(s, t1.image, p);
+            return new GETFIELD(k);
+            }
+        }
+    | 
+    <GETSTATIC> s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+        {
+            {
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addFieldref(s, t1.image, p);
+            Debug.D(p);
+            return new GETSTATIC(k);
+            }
+        }
+    | 
+    <GOTO>  t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            GOTO gt = new GOTO(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    | 
+    <GOTO_W>  t1 = <IDENTIFIER>
+        { 
+            v.add(t1.image);
+            GOTO_W gtw = new GOTO_W(null);
+            return new FakeBranchInstruction(gtw, v);
+        }
+    | 
+    <I2B>  { return InstructionConstants.I2B  ;}
+    | 
+    <I2C>  { return InstructionConstants.I2C  ;}
+    | 
+    <I2D>  { return InstructionConstants.I2D  ;}
+    | 
+    <I2F>  { return InstructionConstants.I2F  ;}
+    | 
+    <I2L>  { return InstructionConstants.I2L  ;}
+    | 
+    <I2S>  { return InstructionConstants.I2S  ;}
+    | 
+    <IADD>  { return InstructionConstants.IADD  ;}
+    | 
+    <IALOAD>  { return InstructionConstants.IALOAD  ;}
+    | 
+    <IAND> { return InstructionConstants.IAND  ;}
+    | 
+    <IASTORE>  { return InstructionConstants.IASTORE  ;}
+    | 
+    <ICONST>  t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new ICONST(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid ICONST argument: " + t1.image);
+            }
+        }
+    | 
+    <ICONST_0>  { return InstructionConstants.ICONST_0  ;}
+    | 
+    <ICONST_1>  { return InstructionConstants.ICONST_1  ;}
+    | 
+    <ICONST_2>  { return InstructionConstants.ICONST_2  ;}
+    | 
+    <ICONST_3>  { return InstructionConstants.ICONST_3  ;}
+    | 
+    <ICONST_4>  { return InstructionConstants.ICONST_4  ;}
+    | 
+    <ICONST_5>  { return InstructionConstants.ICONST_5  ;}
+    | 
+    <ICONST_M1>  { return InstructionConstants.ICONST_M1  ;}
+    | 
+    <IDIV>  { return InstructionConstants.IDIV  ;}
+    | 
+    <IF_ACMPEQ> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ACMPEQ gt = new IF_ACMPEQ(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IF_ACMPNE> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ACMPNE gt = new IF_ACMPNE(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IF_ICMPEQ> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ICMPEQ gt = new IF_ICMPEQ(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IF_ICMPGE> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ICMPGE gt = new IF_ICMPGE(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IF_ICMPGT> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ICMPGT gt = new IF_ICMPGT(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IF_ICMPLE> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ICMPLE gt = new IF_ICMPLE(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IF_ICMPLT> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ICMPLT gt = new IF_ICMPLT(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IF_ICMPNE> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IF_ICMPNE gt = new IF_ICMPNE(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFEQ> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFEQ gt = new IFEQ(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFGE> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFGE gt = new IFGE(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFGT> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFGT gt = new IFGT(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFLE> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFLE gt = new IFLE(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFLT> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFLT gt = new IFLT(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFNE> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFNE gt = new IFNE(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFNONNULL> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFNONNULL gt = new IFNONNULL(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IFNULL> t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            IFNULL gt = new IFNULL(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    |
+    <IINC> t1 = <INTEGER_LITERAL> t2 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                int j = Integer.parseInt(t2.image);
+                return new IINC(k, j);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid IINC argument");
+            }
+        }
+    |
+    <ILOAD>  t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new ILOAD(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid ILOAD argument: " + t1.image);
+            }
+        }
+    | 
+    <ILOAD_0>  { return InstructionConstants.ILOAD_0  ;}
+    | 
+    <ILOAD_1>  { return InstructionConstants.ILOAD_1  ;}
+    | 
+    <ILOAD_2>  { return InstructionConstants.ILOAD_2  ;}
+    | 
+    <IMPDEP_1>  { return new IMPDEP1();}
+    | 
+    <IMPDEP_2>  { return new IMPDEP2();}
+    | 
+    <IMUL>  { return InstructionConstants.IMUL  ;}
+    | 
+    <INEG>  { return InstructionConstants.INEG  ;}
+    | 
+    <INSTANCEOF>  s = classname()
+        {
+            {
+            int k = cpg.addClass(s);
+            return new INSTANCEOF(k);
+            }
+        }
+    | 
+    <INVOKEINTERFACE> s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+    t3 = <INTEGER_LITERAL>
+        {
+            {
+            int j;
+            try
+            {
+                j = Integer.parseInt(t3.image);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid INVOKEINTERFACE argument: " + t3.image);
+            }
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addInterfaceMethodref(s, t1.image, p);
+            return new INVOKEINTERFACE(k, j);
+            }
+        }
+    |
+    <INVOKESPECIAL> s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+        {
+            {
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addMethodref(s, t1.image, p);
+            return new INVOKESPECIAL(k);
+            }
+        }
+    |
+    <INVOKESTATIC> s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+        {
+            {
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addMethodref(s, t1.image, p);
+            return new INVOKESTATIC(k);
+            }
+        }
+    |
+    <INVOKEVIRTUAL> s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+        {
+            {
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addMethodref(s, t1.image, p);
+            return new INVOKEVIRTUAL(k);
+            }
+        }
+    |
+    <IOR> { return InstructionConstants.IOR  ;}
+    |
+    <IREM>  { return InstructionConstants.IREM  ;}
+    | 
+    <IRETURN>  { return InstructionConstants.IRETURN  ;}
+    | 
+    <ISHL>  { return InstructionConstants.ISHL  ;}
+    | 
+    <ISHR>  { return InstructionConstants.ISHR  ;}
+    | 
+    <ISTORE>  t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new ISTORE(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid ISTORE argument: " + t1.image);
+            }
+        }
+    | 
+    <ISTORE_0>  { return InstructionConstants.ISTORE_0  ;}
+    | 
+    <ISTORE_1>  { return InstructionConstants.ISTORE_1  ;}
+    | 
+    <ISTORE_2>  { return InstructionConstants.ISTORE_2  ;}
+    | 
+    <ISUB>  { return InstructionConstants.ISUB  ;}
+    | 
+    <IUSHR>  { return InstructionConstants.IUSHR  ;}
+    | 
+    <IXOR>  { return InstructionConstants.IXOR  ;}
+    | 
+    <JSR>  t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            JSR gt = new JSR(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    | 
+    <JSR_W>  t1 = <IDENTIFIER>
+        { 
+            {
+            v.add(t1.image);
+            JSR_W gt = new JSR_W(null);
+            return new FakeBranchInstruction(gt, v);
+            }
+        }
+    | 
+    <L2D>  { return InstructionConstants.L2D  ;}
+    | 
+    <L2F>  { return InstructionConstants.L2F  ;}
+    | 
+    <L2I>  { return InstructionConstants.L2I  ;}
+    | 
+    <LADD>  { return InstructionConstants.LADD  ;}
+    | 
+    <LALOAD>  { return InstructionConstants.LALOAD  ;}
+    | 
+    <LAND>  { return InstructionConstants.LAND  ;}
+    | 
+    <LASTORE>  { return InstructionConstants.LASTORE  ;}
+    | 
+    <LCMP>  { return InstructionConstants.LCMP  ;}
+    | 
+    <LCONST> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                long k = Long.parseLong(t1.image);
+                return new LCONST(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid LCONST argument: " + t1.image);
+            }
+        }
+    | 
+    <LCONST_0>  { return InstructionConstants.LCONST_0  ;}
+    | 
+    <LCONST_1>  { return InstructionConstants.LCONST_1  ;}
+    | 
+    <LDC>  ( t1 = <INTEGER_LITERAL> | t1 = <STRING_LITERAL> |
+             t1 = <FIXED_POINT_LITERAL> )
+        {
+            {
+            int k = -1;
+            if (t1.kind == STRING_LITERAL)
+            {
+                k = cpg.addString(t1.image.substring(1,t1.image.length()-1));
+            }
+            else
+            if (t1.kind == FIXED_POINT_LITERAL)
+            {
+                try 
+                {
+                    float f = Float.parseFloat(t1.image);
+                    k = cpg.addFloat(f);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid LDC float argument: " + t1.image);
+                }
+            }
+            else
+            {
+                try 
+                {
+                    int f = Integer.parseInt(t1.image);
+                    k = cpg.addInteger(f);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid LDC integer argument: " + t1.image);
+                }
+            }
+            return new LDC(k);
+            }
+        }
+    | 
+    <LDC_W> ( t1 = <INTEGER_LITERAL> | t1 = <STRING_LITERAL> |
+             t1 = <FIXED_POINT_LITERAL> )
+        {
+            {
+            int k = -1;
+            if (t1.kind == STRING_LITERAL)
+            {
+                k = cpg.addString(t1.image.substring(1,t1.image.length()-1));
+            }
+            else
+            if (t1.kind == FIXED_POINT_LITERAL)
+            {
+                try 
+                {
+                    float f = Float.parseFloat(t1.image);
+                    k = cpg.addFloat(f);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid LDC_W float argument: " + t1.image);
+                }
+            }
+            else
+            {
+                try 
+                {
+                    int f = Integer.parseInt(t1.image);
+                    k = cpg.addInteger(f);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid LDC_W integer argument: " + t1.image);
+                }
+            }
+            return new LDC_W(k);
+            }
+        }
+    | 
+    <LDC2_W>  ( t1 = <INTEGER_LITERAL> | t1 = <STRING_LITERAL> |
+             t1 = <FIXED_POINT_LITERAL> )
+        {
+            {
+            int k = -1;
+            if (t1.kind == STRING_LITERAL)
+            {
+                k = cpg.addString(t1.image.substring(1,t1.image.length()-1));
+            }
+            else
+            if (t1.kind == FIXED_POINT_LITERAL)
+            {
+                try 
+                {
+                    float f = Float.parseFloat(t1.image);
+                    k = cpg.addFloat(f);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid LDC_W float argument: " + t1.image);
+                }
+            }
+            else
+            {
+                try 
+                {
+                    int f = Integer.parseInt(t1.image);
+                    k = cpg.addInteger(f);
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid LDC_W integer argument: " + t1.image);
+                }
+            }
+            return new LDC2_W(k);
+            }
+        }
+    | 
+    <LDIV>  { return InstructionConstants.LDIV  ;}
+    | 
+    <LLOAD> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new LLOAD(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid LLOAD argument: " + t1.image);
+            }
+        }
+
+    | 
+    <LMUL>  { return InstructionConstants.LMUL  ;}
+    | 
+    <LNEG>  { return InstructionConstants.LNEG  ;}
+    | 
+    <LOOKUPSWITCH> t2 = <INTEGER_LITERAL> t3 = <INTEGER_LITERAL>
+                            {
+                                v = new Vector(); 
+                            }
+                   ( 
+	  LOOKAHEAD( { getToken(1).kind == IDENTIFIER && getToken(2).kind != COLON } )
+                        t1 = <IDENTIFIER> 
+                            {
+                                v.add(t1.image);
+                            }  
+                    )+
+        {
+            {
+            int f = 0, to = 0;
+            try 
+            {
+                f = Integer.parseInt(t2.image);
+                to = Integer.parseInt(t3.image);
+                if (to - f + 2 != v.size())
+                    throw new NumberFormatException(); 
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid LOOKUPSWITCH arguments" + v.size() + 
+                    " " + (to-f+2));
+            }
+            int[] match = new int[to - f + 1];
+            for (int i = 0; i < match.length; i++)
+            {
+                match[i] = f + i;
+            }
+            LOOKUPSWITCH ls = new LOOKUPSWITCH(match, new InstructionHandle[match.length], null);
+            return new FakeBranchInstruction(ls, v);
+            }
+        }
+    | 
+    <LOR>  { return InstructionConstants.LOR  ;}
+    | 
+    <LREM>  { return InstructionConstants.LREM  ;}
+    | 
+    <LRETURN>  { return InstructionConstants.LRETURN  ;}
+    | 
+    <LSHL>  { return InstructionConstants.LSHL  ;}
+    | 
+    <LSHR>  { return InstructionConstants.LSHR  ;}
+    | 
+    <LSTORE> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                return new LSTORE(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid LSTORE argument: " + t1.image);
+            }
+        }
+    | 
+    <LSUB>  { return InstructionConstants.LSUB  ;}
+    | 
+    <LUSHR>  { return InstructionConstants.LUSHR  ;}
+    | 
+    <LXOR>  { return InstructionConstants.LXOR  ;}
+    | 
+    <MONITORENTER>  { return InstructionConstants.MONITORENTER  ;}
+    | 
+    <MONITOREXIT>  { return InstructionConstants.MONITOREXIT  ;}
+    | 
+    <MULTIANEWARRAY>  s = classname() t1 = <INTEGER_LITERAL>
+        {
+            {
+            int j = cpg.addClass(s);
+            try
+            {
+                short k = Short.parseShort(t1.image);
+                return new MULTIANEWARRAY(j, k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid MULTIANEWARRAY argument: " + t1.image);
+            }
+            }
+        }
+    | 
+    <NEW>  s = classname()
+        {
+            {
+            int k = cpg.addClass(s);
+            return new NEW(k);
+            }
+        }
+    | 
+    <NEWARRAY> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                if (k < 4 || k > 10)
+                    throw new NumberFormatException();
+                return new NEWARRAY( (byte) k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid NEWARRAY argument: " + t1.image);
+            }
+        }
+    | 
+    <NOP> { return InstructionConstants.NOP  ;}
+    | 
+    <POP>  { return InstructionConstants.POP  ;}
+    | 
+    <POP2>  { return InstructionConstants.POP2  ;}
+    | 
+    <PUTFIELD>  s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+        {
+            {
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addFieldref(s, t1.image, p);
+            return new PUTFIELD(k);
+            }
+        }
+    | 
+    <PUTSTATIC> s = classname() t1 = <IDENTIFIER> t2 = <STRING_LITERAL>
+        {
+            {
+            String p = t2.image.substring(1, t2.image.length()-1);
+            int k = cpg.addFieldref(s, t1.image, p);
+            return new PUTSTATIC(k);
+            }
+        }
+    | 
+    <RET> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                int k = Integer.parseInt(t1.image);
+                if (k < 0 || k > 255)
+                    throw new NumberFormatException();
+                return new RET(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid RET argument: " + t1.image);
+            }
+        }
+    | 
+    <RETURN>  { return InstructionConstants.RETURN  ;}
+    | 
+    <SALOAD>  { return InstructionConstants.SALOAD  ;}
+    | 
+    <SASTORE>  { return InstructionConstants.SASTORE  ;}
+    | 
+    <SIPUSH> t1 = <INTEGER_LITERAL>
+        { 
+            try
+            {
+                short k = Short.parseShort(t1.image);
+                return new SIPUSH(k);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new ParseException("Invalid SIPUSH argument: " + t1.image);
+            }
+        }
+    | 
+    <SWAP>  { return InstructionConstants.SWAP  ;}
+    |
+    <TABLESWITCH>  <DEFAUL> t1 = <IDENTIFIER> 
+                            {
+                                v = new Vector(); 
+                                v1 = new Vector();
+                                v.add(t1.image);
+                            }  
+                    ( <CASE> t2 = <INTEGER_LITERAL> t3 = <IDENTIFIER>
+                            {
+                                v1.add(t2.image);
+                                v.add(t3.image);
+                            }
+                    )+
+        {
+            {
+            int[] match = new int[v1.size()];
+            for (int i = 0; i < match.length; i++)
+            {
+                try {
+                    match[i] = Integer.parseInt(((String) v1.elementAt(i)));
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid case argument: " + v1.elementAt(i));
+                }
+            }
+            TABLESWITCH ls = new TABLESWITCH(match, new InstructionHandle[match.length], null);
+            return new FakeBranchInstruction(ls, v);
+            }
+        }
+  )
+  {
+    return null;
+  }
+}
+  
+  
+String classname():
+{
+String s = null;
+Token t1 = null;
+}
+{
+    t1 = <IDENTIFIER> { s = t1.image; }
+    ( LOOKAHEAD(2) <DOT> t1 = <IDENTIFIER> { s += "." + t1.image; } )*
+    { return s;}
+}
+
+
+void directive():
+{
+Token t = null, t1 = null;
+int af;
+String s;
+}
+{
+	<DOT>
+	(
+	( <LOCAL> t = <INTEGER_LITERAL> {
+				try
+				{
+				   int k = Integer.parseInt(t.image);
+				   meth.setMaxLocals(meth.getMaxLocals() + k);		
+                }
+                catch (NumberFormatException e)
+                {
+                    throw new ParseException("Invalid .local argument: " + t.image);
+                }
+			}
+	)
+	| 
+	(
+	  <FIELD> af = accessFlags() 
+	  		  t1 = <STRING_LITERAL>
+	  		  t = <IDENTIFIER> {
+		            s = "()"+t1.image.substring(1, t1.image.length()-1);
+	  		  		if ( clg.containsField(t.image) == null)
+	  		  		{
+			            Field f = new FieldGen(af, Type.getReturnType(s), 
+	  		  		                t.image, cpg).getField();
+		  		  		clg.addField(f);
+		  		  	}
+		  		  	else
+		  		  		throw new ParseException("Field "+ t.image + "already exists");
+	  			}
+	))
+}
+	
+int accessFlags() :
+{
+int k = 0;
+}
+{
+	(
+		<PRIVATE> { k += 1;}
+		|
+		<PUBLIC> { k += 2;}
+		|
+		<PROTECTED> {k += 3;}
+	) *
+	{ return k; }
+}
+
+
+
