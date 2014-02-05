@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.aspectj.apache.bcel.classfile.ClassParser;
+import org.aspectj.apache.bcel.classfile.ConstantPool;
 import org.aspectj.apache.bcel.classfile.JavaClass;
 import org.aspectj.apache.bcel.classfile.Method;
 import org.aspectj.apache.bcel.generic.ClassGen;
@@ -132,7 +133,7 @@ public class CFG extends Graph {
      * @throws InvalidStackArgument If {@link InstructionGraph#calcStack}
      * throws this exception
      */
-    private void createFromCode(MethodGen mg, ClassGen clazz, ConstantPoolGen cp)
+    private void createFromCode(MethodGen mg, ClassGen clazz, ConstantPool cp)
             throws InvalidInstructionException, InvalidStackArgument {
         InstructionGraph ig = new InstructionGraph(mg);
         if (ig.size() == 0) {
@@ -194,7 +195,7 @@ public class CFG extends Graph {
     private CFGNode newNodeTo(
     	InstructionNode x, 
     	ClassGen clazz, 
-    	ConstantPoolGen cp,
+    	ConstantPool cp,
     	InstructionGraph ig) 
     {
 
@@ -403,8 +404,7 @@ public class CFG extends Graph {
         JavaClass java_class;
 
         java_class = new ClassParser(args[0]).parse();	// May throw IOException
-        ConstantPoolGen cp =
-                new ConstantPoolGen(java_class.getConstantPool());
+        ConstantPool cp = java_class.getConstantPool();
         Method[] methods = java_class.getMethods();
 		ClassGen cg =  new ClassGen(java_class);
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("xxx")));

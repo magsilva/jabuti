@@ -22,9 +22,9 @@ package br.jabuti.graph;
 
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
-import org.aspectj.apache.bcel.generic.INVOKESPECIAL;
-import org.aspectj.apache.bcel.generic.INVOKESTATIC;
+import org.aspectj.apache.bcel.Constants;
+import org.aspectj.apache.bcel.classfile.Constant;
+import org.aspectj.apache.bcel.classfile.ConstantPool;
 import org.aspectj.apache.bcel.generic.InvokeInstruction;
 import org.aspectj.apache.bcel.generic.Type;
 
@@ -62,7 +62,7 @@ public class CFGCallNode extends CFGNode {
     /** indicates whether the method is something special, like aspects */
     private int specialMethod;
 	
-    public CFGCallNode(CFGNode x, InstructionNode ins, ConstantPoolGen cp) {
+    public CFGCallNode(CFGNode x, InstructionNode ins, ConstantPool cp) {
         super(x);
         InvokeInstruction y = (InvokeInstruction) ins.ih.getInstruction();
 
@@ -74,7 +74,7 @@ public class CFGCallNode extends CFGNode {
             param[i] = vt[i].getSignature();
         }
 		
-        if (y instanceof INVOKESTATIC || y instanceof INVOKESPECIAL) {
+        if (y instanceof InvokeInstruction) {
             classe = new String[1];
             classe[0] = y.getClassName(cp);
         } else {

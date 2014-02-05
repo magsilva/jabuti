@@ -58,7 +58,7 @@
 		</dependency>
 
 		<dependency>
-			<version>1.6.0</version>
+			<version>[1.8.0,)</version>
 			<groupId>labes</groupId>
 			<artifactId>bcel</artifactId>
 		</dependency>
@@ -184,6 +184,22 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<executable>java</executable>
+					<longClasspath>true</longClasspath>
+					<arguments>
+						<argument>-XX:MaxPermSize=128M</argument>
+						<argument>-Xmx1024M</argument>
+						<argument>-XX:-UseSplitVerifier</argument>
+						<argument>-classpath</argument>
+            			<classpath />
+					</arguments>
+				</configuration>
 			</plugin>
 		</plugins>
 		

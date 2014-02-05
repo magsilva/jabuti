@@ -24,10 +24,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.aspectj.apache.bcel.classfile.ClassParser;
+import org.aspectj.apache.bcel.classfile.ConstantPool;
 import org.aspectj.apache.bcel.classfile.JavaClass;
 import org.aspectj.apache.bcel.classfile.Method;
 import org.aspectj.apache.bcel.generic.ClassGen;
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
 import br.jabuti.graph.CFG;
@@ -143,8 +143,7 @@ public class AllNodes extends AbstractCriterion {
     {
         JavaClass java_class;
         java_class = new ClassParser ( args[0] ).parse (  );	// May throw IOException
-        ConstantPoolGen cp =
-            new ConstantPoolGen ( java_class.getConstantPool (  ) );
+        ConstantPool cp = java_class.getConstantPool();
         
         ClassGen cg = new ClassGen(java_class);
                     

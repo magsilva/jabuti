@@ -20,7 +20,7 @@
 package br.jabuti.graph;
 
 
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
+import org.aspectj.apache.bcel.classfile.ConstantPool;
 
 import br.jabuti.verifier.InstructionNode;
 
@@ -32,7 +32,7 @@ public class CFGSuperNode extends CFGCallNode {
 	 */
 	private static final long serialVersionUID = 9190824248421013922L;
 
-	public CFGSuperNode(CFGNode x, InstructionNode ins, ConstantPoolGen cp) {
+	public CFGSuperNode(CFGNode x, InstructionNode ins, ConstantPool cp) {
         super(x, ins, cp);
     }
 	
