@@ -30,19 +30,19 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.classfile.ClassParser;
-import org.aspectj.apache.bcel.classfile.ConstantPool;
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.classfile.Method;
-import org.aspectj.apache.bcel.generic.ClassGen;
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
-import org.aspectj.apache.bcel.generic.GotoInstruction;
-import org.aspectj.apache.bcel.generic.Instruction;
-import org.aspectj.apache.bcel.generic.InstructionHandle;
-import org.aspectj.apache.bcel.generic.InvokeInstruction;
-import org.aspectj.apache.bcel.generic.JsrInstruction;
-import org.aspectj.apache.bcel.generic.MethodGen;
-import org.aspectj.apache.bcel.generic.RET;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.ClassGen;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GotoInstruction;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InvokeInstruction;
+import org.apache.bcel.generic.JsrInstruction;
+import org.apache.bcel.generic.MethodGen;
+import org.apache.bcel.generic.RET;
 
 import br.jabuti.util.Debug;
 import br.jabuti.verifier.InstructionGraph;
@@ -101,7 +101,8 @@ public class CFG extends Graph {
             throws InvalidInstructionException, InvalidStackArgument {
         super();
         config = cfg;
-		createFromCode(mg, cl, mg.getConstantPool());
+        
+		createFromCode(mg, cl, mg.getConstantPool().getConstantPool());
 		computeDefUse();
 		releaseInstructionGraph();
     }
@@ -413,8 +414,8 @@ public class CFG extends Graph {
             System.out.println("\n\n--------------------------");
             System.out.println(methods[i].getName());
             System.out.println("--------------------------");
-            MethodGen mg =
-                    new MethodGen(methods[i], java_class.getClassName(), cp);
+            ConstantPoolGen cpg = new ConstantPoolGen(cp);
+            MethodGen mg = new MethodGen(methods[i], java_class.getClassName(), cpg);
             CFG g = new CFG(mg,cg, NONE);
 
             g.print(System.out);

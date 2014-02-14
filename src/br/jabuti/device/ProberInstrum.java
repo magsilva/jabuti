@@ -29,8 +29,8 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.util.ClassPath;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.util.ClassPath;
 
 import br.jabuti.lookup.Program;
 import br.jabuti.project.JabutiProject;

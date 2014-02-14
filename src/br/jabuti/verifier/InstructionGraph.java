@@ -32,17 +32,17 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.aspectj.apache.bcel.classfile.ClassParser;
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.classfile.Method;
-import org.aspectj.apache.bcel.generic.CodeExceptionGen;
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
-import org.aspectj.apache.bcel.generic.InstructionHandle;
-import org.aspectj.apache.bcel.generic.InstructionList;
-import org.aspectj.apache.bcel.generic.JsrInstruction;
-import org.aspectj.apache.bcel.generic.MethodGen;
-import org.aspectj.apache.bcel.generic.RET;
-import org.aspectj.apache.bcel.generic.Type;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.CodeExceptionGen;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.JsrInstruction;
+import org.apache.bcel.generic.MethodGen;
+import org.apache.bcel.generic.RET;
+import org.apache.bcel.generic.Type;
 import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import br.jabuti.graph.Graph;

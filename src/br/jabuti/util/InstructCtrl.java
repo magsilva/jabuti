@@ -23,17 +23,17 @@ package br.jabuti.util;
 
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.classfile.LocalVariable;
-import org.aspectj.apache.bcel.classfile.LocalVariableTable;
-import org.aspectj.apache.bcel.generic.BranchInstruction;
-import org.aspectj.apache.bcel.generic.Instruction;
-import org.aspectj.apache.bcel.generic.InstructionHandle;
-import org.aspectj.apache.bcel.generic.InstructionList;
-import org.aspectj.apache.bcel.generic.MethodGen;
-import org.aspectj.apache.bcel.generic.RET;
-import org.aspectj.apache.bcel.generic.ReturnInstruction;
-import org.aspectj.apache.bcel.generic.Select;
-import org.aspectj.apache.bcel.generic.UnconditionalBranch;
+import org.apache.bcel.classfile.LocalVariable;
+import org.apache.bcel.classfile.LocalVariableTable;
+import org.apache.bcel.generic.BranchInstruction;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.MethodGen;
+import org.apache.bcel.generic.RET;
+import org.apache.bcel.generic.ReturnInstruction;
+import org.apache.bcel.generic.Select;
+import org.apache.bcel.generic.UnconditionalBranch;
 
 
 /** Implements some utility methods concerning the use of the

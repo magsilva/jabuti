@@ -26,9 +26,9 @@ options {
 PARSER_BEGIN(ASMParse)
 package br.jabuti.instrumenter;
 
-import org.aspectj.apache.bcel.classfile.*;
-import org.aspectj.apache.bcel.generic.*;
-import org.aspectj.apache.bcel.generic.Visitor;
+import org.apache.bcel.classfile.*;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.generic.Visitor;
 import java.util.*;
 import java.io.*;
 import br.jabuti.util.*;

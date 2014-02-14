@@ -23,15 +23,15 @@ package br.jabuti.lookup;
 import java.io.ByteArrayInputStream;
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.classfile.ClassParser;
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.classfile.Method;
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
-import org.aspectj.apache.bcel.generic.Instruction;
-import org.aspectj.apache.bcel.generic.InstructionHandle;
-import org.aspectj.apache.bcel.generic.InstructionList;
-import org.aspectj.apache.bcel.generic.InvokeInstruction;
-import org.aspectj.apache.bcel.generic.MethodGen;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.InvokeInstruction;
+import org.apache.bcel.generic.MethodGen;
 
 import br.jabuti.util.Persistency;
 

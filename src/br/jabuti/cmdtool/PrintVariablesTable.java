@@ -25,7 +25,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.aspectj.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.LocalVariableGen;
 
 import br.jabuti.graph.CFG;
 import br.jabuti.graph.CFGNode;

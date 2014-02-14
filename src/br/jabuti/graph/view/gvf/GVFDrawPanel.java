@@ -54,8 +54,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
-import org.aspectj.apache.bcel.classfile.LineNumberTable;
-import org.aspectj.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.classfile.LineNumberTable;
+import org.apache.bcel.generic.InstructionHandle;
 
 import br.jabuti.graph.CFGNode;
 import br.jabuti.graph.GraphNode;

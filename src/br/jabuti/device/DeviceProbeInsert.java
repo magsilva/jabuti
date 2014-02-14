@@ -26,9 +26,9 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.aspectj.apache.bcel.classfile.Attribute;
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.classfile.Unknown;
+import org.apache.bcel.classfile.Attribute;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Unknown;
 
 import br.jabuti.lookup.Program;
 import br.jabuti.probe.DefaultProbeInsert;

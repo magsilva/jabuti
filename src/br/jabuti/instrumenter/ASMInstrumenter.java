@@ -23,15 +23,15 @@ package br.jabuti.instrumenter;
 
 import java.io.ByteArrayInputStream;
 
-import org.aspectj.apache.bcel.Repository;
-import org.aspectj.apache.bcel.classfile.ClassParser;
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.classfile.Method;
-import org.aspectj.apache.bcel.generic.ClassGen;
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
-import org.aspectj.apache.bcel.generic.InstructionHandle;
-import org.aspectj.apache.bcel.generic.InstructionList;
-import org.aspectj.apache.bcel.generic.MethodGen;
+import org.apache.bcel.Repository;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.ClassGen;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.MethodGen;
 
 
 /** This class allows one to insert code in a JVM program

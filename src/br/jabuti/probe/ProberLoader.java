@@ -25,8 +25,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.util.ClassPath;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.util.ClassPath;
 
 import br.jabuti.instrumenter.InstrumentLoader;
 import br.jabuti.lookup.Program;

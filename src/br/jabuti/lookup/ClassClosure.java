@@ -24,13 +24,13 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.classfile.ClassParser;
-import org.aspectj.apache.bcel.classfile.Constant;
-import org.aspectj.apache.bcel.classfile.ConstantClass;
-import org.aspectj.apache.bcel.classfile.ConstantPool;
-import org.aspectj.apache.bcel.classfile.ConstantUtf8;
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.util.ClassPath;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.Constant;
+import org.apache.bcel.classfile.ConstantClass;
+import org.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.classfile.ConstantUtf8;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.util.ClassPath;
 
 import br.jabuti.util.Debug;
 
@@ -56,7 +56,7 @@ public class ClassClosure {
 	}
 
 	public ClassClosure() {
-		cp = ClassPath.getSystemClassPath();
+		cp = ClassPath.SYSTEM_CLASS_PATH;
 	}
 
 	public String[] getClosure(String className) {

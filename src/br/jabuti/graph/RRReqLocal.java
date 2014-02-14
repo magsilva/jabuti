@@ -23,9 +23,9 @@ package br.jabuti.graph;
 import java.util.BitSet;
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.generic.Instruction;
-import org.aspectj.apache.bcel.generic.LoadInstruction;
-import org.aspectj.apache.bcel.generic.StoreInstruction;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.LoadInstruction;
+import org.apache.bcel.generic.StoreInstruction;
 
 import br.jabuti.verifier.InstructionNode;
 

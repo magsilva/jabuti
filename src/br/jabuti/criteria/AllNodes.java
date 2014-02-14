@@ -23,12 +23,13 @@ package br.jabuti.criteria;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.aspectj.apache.bcel.classfile.ClassParser;
-import org.aspectj.apache.bcel.classfile.ConstantPool;
-import org.aspectj.apache.bcel.classfile.JavaClass;
-import org.aspectj.apache.bcel.classfile.Method;
-import org.aspectj.apache.bcel.generic.ClassGen;
-import org.aspectj.apache.bcel.generic.MethodGen;
+import org.apache.bcel.classfile.ClassParser;
+import org.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.ClassGen;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.MethodGen;
 
 import br.jabuti.graph.CFG;
 import br.jabuti.graph.Graph;
@@ -153,8 +154,8 @@ public class AllNodes extends AbstractCriterion {
             System.out.println ( "\n\n--------------------------" );
             System.out.println ( methods[i].getName (  ) );
             System.out.println ( "--------------------------" );
-            MethodGen mg =
-                new MethodGen ( methods[i], java_class.getClassName (  ), cp );
+            ConstantPoolGen cpg = new ConstantPoolGen(cp);
+            MethodGen mg = new MethodGen ( methods[i], java_class.getClassName (  ), cpg);
 
             CFG g = new CFG(mg, cg);
 

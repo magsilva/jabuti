@@ -25,8 +25,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.generic.IINC;
-import org.aspectj.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.IINC;
+import org.apache.bcel.generic.Instruction;
 
 import br.jabuti.util.Debug;
 import br.jabuti.verifier.InstructionGraph;

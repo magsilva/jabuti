@@ -24,14 +24,14 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.aspectj.apache.bcel.classfile.LineNumberTable;
-import org.aspectj.apache.bcel.classfile.LocalVariableTable;
-import org.aspectj.apache.bcel.classfile.Method;
-import org.aspectj.apache.bcel.generic.ClassGen;
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
-import org.aspectj.apache.bcel.generic.InstructionHandle;
-import org.aspectj.apache.bcel.generic.LocalVariableGen;
-import org.aspectj.apache.bcel.generic.MethodGen;
+import org.apache.bcel.classfile.LineNumberTable;
+import org.apache.bcel.classfile.LocalVariableTable;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.ClassGen;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.InstructionHandle;
+import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.MethodGen;
 
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.AllEdges;

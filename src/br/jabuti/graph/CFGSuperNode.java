@@ -20,7 +20,7 @@
 package br.jabuti.graph;
 
 
-import org.aspectj.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.classfile.ConstantPool;
 
 import br.jabuti.verifier.InstructionNode;
 

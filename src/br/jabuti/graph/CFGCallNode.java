@@ -22,11 +22,12 @@ package br.jabuti.graph;
 
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.Constants;
-import org.aspectj.apache.bcel.classfile.Constant;
-import org.aspectj.apache.bcel.classfile.ConstantPool;
-import org.aspectj.apache.bcel.generic.InvokeInstruction;
-import org.aspectj.apache.bcel.generic.Type;
+import org.apache.bcel.Constants;
+import org.apache.bcel.classfile.Constant;
+import org.apache.bcel.classfile.ConstantPool;
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.InvokeInstruction;
+import org.apache.bcel.generic.Type;
 
 import br.jabuti.verifier.InstructionNode;
 
@@ -65,9 +66,9 @@ public class CFGCallNode extends CFGNode {
     public CFGCallNode(CFGNode x, InstructionNode ins, ConstantPool cp) {
         super(x);
         InvokeInstruction y = (InvokeInstruction) ins.ih.getInstruction();
-
-        name = y.getMethodName(cp);
-        Type[] vt = y.getArgumentTypes(cp);
+        ConstantPoolGen cpg = new ConstantPoolGen(cp);
+        name = y.getMethodName(cpg);
+        Type[] vt = y.getArgumentTypes(cpg);
 
         param = new String[vt.length];
         for (int i = 0; i < vt.length; i++) {
@@ -76,7 +77,7 @@ public class CFGCallNode extends CFGNode {
 		
         if (y instanceof InvokeInstruction) {
             classe = new String[1];
-            classe[0] = y.getClassName(cp);
+            classe[0] = y.getClassName(cpg);
         } else {
             Vector vtype = new Vector();
 

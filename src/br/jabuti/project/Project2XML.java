@@ -27,7 +27,7 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import org.aspectj.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.JavaClass;
 
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.Criterion;

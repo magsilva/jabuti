@@ -32,7 +32,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import org.aspectj.apache.bcel.util.ClassPath;
+import org.apache.bcel.util.ClassPath;
 
 import br.jabuti.util.Debug;
 

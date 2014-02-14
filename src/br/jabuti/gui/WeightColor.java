@@ -28,7 +28,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import org.aspectj.apache.bcel.classfile.Method;
+import org.apache.bcel.classfile.Method;
 
 import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.DefUse;
