@@ -381,19 +381,21 @@ public class Main extends JDialog implements ActionListener {
 				javac.setText(compiler);
 			}
 
-			String classpath = code.getText().trim() + File.pathSeparator
-					+ jabutiLib.getText().trim() + File.pathSeparator
-					+ otherLibs.getText().trim() + File.pathSeparator
-					+ jsource.getText().trim() + File.pathSeparator
-					+ outpath;
+			String classpath =
+					  code.getText().trim() + File.pathSeparator
+					+ jabutiLib.getText().trim() + File.pathSeparator;
+			
+			if (! otherLibs.getText().trim().isEmpty()) {
+				classpath += otherLibs.getText().trim() + File.pathSeparator;
+			}
 
 			String sourcepath = jsource.getText().trim() + File.separator;
 			sourcepath += tsuit.getText().trim().replace('.', File.separatorChar);
 
 			textArea.append("\nCompiling the test set...\n");
-			textArea.append(compiler + " -source 1.5 -target 1.5" + " -cp " + classpath + " -d " + outpath + " " + sourcepath + ".java\n");
+			textArea.append(compiler + " -cp " + classpath + " -d " + outpath + " " + sourcepath + ".java\n");
 
-			ProcessBuilder pb = new ProcessBuilder(compiler, "-source", "1.5", "-target", "1.5", "-cp", classpath, "-d", outpath, sourcepath + ".java");
+			ProcessBuilder pb = new ProcessBuilder(compiler, "-cp", classpath, "-d", outpath, sourcepath + ".java");
 			pb.redirectErrorStream(true);
 			try {
 				Process pr = pb.start();
@@ -423,15 +425,18 @@ public class Main extends JDialog implements ActionListener {
 		
 		// Run
 		if (e.getSource() == run) {
-			String classpath = code.getText().trim() + File.pathSeparator
+			String classpath =
+  					  code.getText().trim() + File.pathSeparator
 					+ junit.getText().trim() + File.pathSeparator
-					+ jabutiLib.getText().trim() + File.pathSeparator
-					+ otherLibs.getText().trim();
+					+ jabutiLib.getText().trim() + File.pathSeparator;
+			
+			if (! otherLibs.getText().trim().isEmpty()) {
+				classpath += otherLibs.getText().trim() + File.pathSeparator;
+			}
 
 			textArea.append("\n\nRunning to get tests set information...\n");
 			textArea.append(java.getText().trim() +
-					" -XX:-UseSplitVerifier" +
-					" -cp "	+ jabutiLib.getText().trim() + File.pathSeparator + otherLibs.getText().trim() +
+					" -cp "	+ jabutiLib.getText().trim() + 
 					" " + JUNIT_CORE +
 					" -cp "	+ classpath +
 					" -tcClass " + tsuit.getText().trim() + "\n");
@@ -530,18 +535,20 @@ public class Main extends JDialog implements ActionListener {
 			}
 
 			if (ts.size() > 0) {
-				String classpath = code.getText().trim() + File.pathSeparator
+				String classpath =
+						  code.getText().trim() + File.pathSeparator
 						+ junit.getText().trim() + File.pathSeparator
-						+ jabutiLib.getText().trim() + File.pathSeparator
-						+ otherLibs.getText().trim();
+						+ jabutiLib.getText().trim() + File.pathSeparator;
 
-				textArea
-						.append("\n--------------------------------------------------------\nRunning to get trace information...\n");
+				if (! otherLibs.getText().trim().isEmpty()) {
+					classpath += otherLibs.getText().trim() + File.pathSeparator;
+				}
+
+				textArea.append("\n--------------------------------------------------------\nRunning to get trace information...\n");
 
 				File temp = null;
 				try {
-					temp = File
-							.createTempFile("log-instr-junit-jabuti", ".log");
+					temp = File.createTempFile("log-instr-junit-jabuti", ".log");
 				} catch (IOException e2) {
 					e2.printStackTrace();
 				}
@@ -555,11 +562,11 @@ public class Main extends JDialog implements ActionListener {
 				} else {
 
 					textArea.append(java.getText().trim() + " -cp "
-							+ jabutiLib.getText().trim() + File.pathSeparator
-							+ otherLibs.getText().trim() + " " + JUNIT_CORE
-							+ " -cp " + classpath + " -trace "
-							+ trace.getText().trim() + " -tcClass "
-							+ tsuit.getText().trim() + " " + sb.toString()
+							+ jabutiLib.getText().trim() 
+							+ " " + JUNIT_CORE
+							+ " -cp " + classpath
+							+ " -trace " + trace.getText().trim()
+							+ " -tcClass " + tsuit.getText().trim() + " " + sb.toString()
 							+ "\n");
 
 					PrintStream ps = System.out;

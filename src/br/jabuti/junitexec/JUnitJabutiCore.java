@@ -118,18 +118,14 @@ public class JUnitJabutiCore {
 			}
 			if (trace != null) {
 				if (testSet.size() == 0)
-					testSet = JUnitJabutiCore.runCollecting(classpath, tcClass,
-							System.out).keySet();
-				JUnitJabutiCore.runInstrumenting(classpath, tcClass, trace,
-						testSet, System.out);
+					testSet = JUnitJabutiCore.runCollecting(classpath, tcClass, System.out).keySet();
+				JUnitJabutiCore.runInstrumenting(classpath, tcClass, trace,	testSet, System.out);
 			} else {
-				hm = JUnitJabutiCore.runCollecting(classpath, tcClass,
-						System.out);
+				hm = JUnitJabutiCore.runCollecting(classpath, tcClass, System.out);
 				Iterator<String> it = hm.keySet().iterator();
 				while (it.hasNext()) {
 					String n = it.next();
-					System.out.println("TC Name: " + n + " STATUS: "
-							+ hm.get(n));
+					System.out.println("TC Name: " + n + " STATUS: " + hm.get(n));
 				}
 			}
 		}

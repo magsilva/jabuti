@@ -74,6 +74,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.filechooser.FileFilter;
 
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
@@ -1074,10 +1075,7 @@ public class JabutiGUI extends JFrame {
 	// openClass action performed
 	void openClass_actionPerformed(ActionEvent ex) {
 		if (getProject() != null) {
-			int opt = JOptionPane.showConfirmDialog(null,
-					"The current project will be closed. Close?", "Confirm",
-					JOptionPane.YES_NO_OPTION);
-
+			int opt = JOptionPane.showConfirmDialog(null, "The current project will be closed. Close?", "Confirm", JOptionPane.YES_NO_OPTION);
 			if (opt == JOptionPane.NO_OPTION) {
 				return;
 			} else {
@@ -1091,27 +1089,19 @@ public class JabutiGUI extends JFrame {
 
 		do {
 			int k = openFileDialog.showOpenDialog(this);
-
 			if (k != JFileChooser.APPROVE_OPTION) {
 				return;
 			}
 
 			File theFile = openFileDialog.getSelectedFile();
-
-			if (!theFile.isFile()) // verifica se existe
-			{
-				JOptionPane.showMessageDialog(null, "File " + theFile.getName()
-						+ " not found", "Error", JOptionPane.ERROR_MESSAGE);
+			if (!theFile.isFile()) {
+				JOptionPane.showMessageDialog(null, "File " + theFile.getName()	+ " not found", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			pclass = theFile.getName();
-
-			if (!pclass.endsWith(".class")) // verifica se eh .class
-			{
-				JOptionPane.showMessageDialog(null,
-						"A .class file is expected.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+			if (! pclass.endsWith(".class")) {
+				JOptionPane.showMessageDialog(null, "A .class file is expected.", "Error",	JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			pclass = pclass.substring(0, pclass.length() - 6);
@@ -1122,20 +1112,17 @@ public class JabutiGUI extends JFrame {
 			}
 
 			cpath = classpathTextArea.getText().trim();
-
-			if (cpath.length() == 0) {
-				JOptionPane
-						.showMessageDialog(
-								null,
-								"The classpath field cannot be empty. Please, provide the complete path necessary to run the application under testing.",
-								"Error", JOptionPane.ERROR_MESSAGE);
+			if (cpath.isEmpty()) {
+				JOptionPane.showMessageDialog(
+					null,
+					"The classpath field cannot be empty. Please, provide the complete path necessary to run the application under testing.",
+					"Error", JOptionPane.ERROR_MESSAGE);
 			} else {
 				try {
 					ToolConstants.getClassFromClasspath(pclass, false, cpath);
 					invalid = false;
 				} catch (Exception e) {
-					JOptionPane
-					.showMessageDialog(
+					JOptionPane.showMessageDialog(
 							null,
 							"The provided classpath is not valid. It is not possible to locate " + pclass + " from it.",
 							"Error", JOptionPane.ERROR_MESSAGE);
@@ -1145,28 +1132,22 @@ public class JabutiGUI extends JFrame {
 
 		try {
 			jbtProject = new JabutiProject(pclass, cpath);
-			jbtProject
-					.setCFGOption((cfgOptionCheckBox.isSelected()) ? CFG.NO_CALL_NODE
-							: CFG.NONE);
+			jbtProject.setCFGOption((cfgOptionCheckBox.isSelected()) ? CFG.NO_CALL_NODE	: CFG.NONE);
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Cannot parser file " + pclass
-					+ "! ", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Cannot parser file " + pclass	+ "! ", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
 		int status = projectManagerProperty_actionPerformed(ex);
-
 		if (status == JOptionPane.CANCEL_OPTION)
 			return;
 
 		if (getProject() != null) {
-			System.out.println(getProject().toString());
-
 			if (getProject().getProjectFile() != null) {
 				// Loading the test set file
-				TestSet.initialize(getProject(), getProject()
-						.getTraceFileName());
+				TestSet.initialize(getProject(), getProject().getTraceFileName());
 			}
+			
 			// Reseting the probe check variables...
 			if (probeCheck == null) {
 				probeCheck = new ProbeCheck(mainWindow);
@@ -1183,6 +1164,7 @@ public class JabutiGUI extends JFrame {
 
 			enableDefaultOptions();
 		}
+		
 		updatePane();
 	}
 
@@ -1425,10 +1407,7 @@ public class JabutiGUI extends JFrame {
 	// openPrj action performed
 	void openPrj_actionPerformed(ActionEvent ex) {
 		if (getProject() != null) {
-			int opt = JOptionPane.showConfirmDialog(null,
-					"The current project will be closed. Close?", "Confirm",
-					JOptionPane.YES_NO_OPTION);
-
+			int opt = JOptionPane.showConfirmDialog(null, "he current project will be closed. Close?", "Confirm", JOptionPane.YES_NO_OPTION);
 			if (opt == JOptionPane.NO_OPTION) {
 				return;
 			} else {
@@ -1444,21 +1423,15 @@ public class JabutiGUI extends JFrame {
 		}
 		File theFile = projectDialog.getSelectedFile();
 
-		if (!theFile.isFile()) // verifica se existe
-		{
-			JOptionPane.showMessageDialog(null, "File " + theFile.getName()
-					+ " not found.", "Error", JOptionPane.ERROR_MESSAGE);
+		if (! theFile.isFile()) {
+			JOptionPane.showMessageDialog(null, "File " + theFile.getName() + " not found.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
+		// verifica se eh .jbt
 		String pclass = theFile.getName();
-
-		if (!pclass.endsWith(ToolConstants.projectExtension)) // verifica se
-		// eh .jbt
-		{
-			JOptionPane.showMessageDialog(null, "A "
-					+ ToolConstants.projectExtension + " file is expected.",
-					"Error", JOptionPane.ERROR_MESSAGE);
+		if (! pclass.endsWith(ToolConstants.projectExtension)) { 
+			JOptionPane.showMessageDialog(null, "A "+ ToolConstants.projectExtension + " file is expected.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -1579,12 +1552,13 @@ public class JabutiGUI extends JFrame {
 	}
 
 	public JFileChooser projDialogCreate(String name) {
-		JFileChooser fc = new JFileChooser(".");
+		JFileChooser fc = new JFileChooser();
 
-		if (name.length() > 0) {
+		if (name != null && ! name.trim().isEmpty()) {
 			fc.setDialogTitle(name);
 		}
-		javax.swing.filechooser.FileFilter f = new javax.swing.filechooser.FileFilter() {
+		
+		FileFilter f = new FileFilter() {
 			public boolean accept(File f) {
 				if (f.isDirectory()) {
 					return true;
@@ -1600,7 +1574,6 @@ public class JabutiGUI extends JFrame {
 			}
 		};
 
-		fc.removeChoosableFileFilter(fc.getAcceptAllFileFilter());
 		fc.setFileFilter(f);
 		return fc;
 	}
@@ -1793,32 +1766,26 @@ public class JabutiGUI extends JFrame {
 
 	// close Project action performed
 	void closePrj_actionPerformed(ActionEvent ex) {
-		if (getProject() != null && getProject().changed()) {
-			int cf = JOptionPane.showConfirmDialog(null,
-					"Project in use. Save?", "Confirm",
-					JOptionPane.YES_NO_CANCEL_OPTION);
-
-			if (cf == JOptionPane.CANCEL_OPTION) {
-				return;
-			}
-			if (cf == JOptionPane.YES_OPTION) {
-				try {
-					if (getProject().getProjectFile() != null) {
-						getProject().saveProject();
-					} else {
-						savePrj_actionPerformed(ex);
-					}
-				} catch (Exception es) {
-					String pclass = getProject().getProjectFileName();
-
-					JOptionPane
-							.showMessageDialog(null, "Error saving file "
-									+ pclass + "! ", "Error",
-									JOptionPane.ERROR_MESSAGE);
-					System.out.println(es.getMessage());
-					return;
-				}
-			}
+		if (getProject() != null) {
+			 if (getProject().changed()) {
+				 int cf = JOptionPane.showConfirmDialog(null, "Project in use. Save?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
+				 if (cf == JOptionPane.CANCEL_OPTION) {
+					 return;
+				 }
+				 if (cf == JOptionPane.YES_OPTION) {
+					 try {
+						 if (getProject().getProjectFile() != null) {
+							 getProject().saveProject();
+						 } else {
+							 savePrj_actionPerformed(ex);
+						 }
+					 } catch (Exception es) {
+						 String pclass = getProject().getProjectFileName();
+						 JOptionPane.showMessageDialog(null, "Error saving file " + pclass + "! ", "Error",	JOptionPane.ERROR_MESSAGE);
+						 return;
+					 }
+				 }
+			 }
 		}
 
 		if (cfgIsVisible()) {
@@ -2910,7 +2877,7 @@ public class JabutiGUI extends JFrame {
 		executor.setTCBin(JabutiGUI.getProject().getJunitBinDir());
 		executor.setTCClass(JabutiGUI.getProject().getJunitTestSet());
 		executor.setJabutiLib(JabutiGUI.getProject().getJUnitJar());
-		executor.setOtherLibs(JabutiGUI.getProject().getClasspath());
+		executor.setOtherLibs("");
 		executor.setTrace(JabutiGUI.getProject().getTraceFileName());
 
 		executor.pack();

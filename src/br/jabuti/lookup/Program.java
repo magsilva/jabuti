@@ -111,8 +111,8 @@ public class Program implements Serializable {
      *     @throws IOException Error reading root class file
      *      
      *     */
-    public Program(String className, boolean noSys, String toAvoid, String classPath)
-            throws ClassNotFoundException, FileNotFoundException, IOException {
+    public Program(String className, boolean noSys, String toAvoid, String classPath) throws ClassNotFoundException, FileNotFoundException, IOException
+    {
         classes = new Hashtable();
         ClassClosure cc = null;
 
@@ -131,7 +131,6 @@ public class Program implements Serializable {
             if (s != null &&	// do I have the code for the class?
                     !cc.doMatch(closure[i], noSys, toAvoid)) {
                 JavaClass javaClass = new ClassParser(s).parse();
-
                 mc = new RClassCode(javaClass, closure[i]);
             } else {
                 mc = new RClass(closure[i]);

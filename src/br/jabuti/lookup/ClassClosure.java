@@ -45,11 +45,11 @@ import br.jabuti.util.Debug;
  * 
  * 
  */
-public class ClassClosure {
-	static final private String[] sysPrefix = new String[] { "java.",
-			"javax.lang", "org.omg" };
+public class ClassClosure
+{
+	private static final String[] sysPrefix = new String[] { "java.", "javax.lang", "org.omg" };
 
-	ClassPath cp = null;
+	private ClassPath cp = null;
 
 	public ClassClosure(String classPath) {
 		cp = new ClassPath(classPath);
@@ -110,9 +110,7 @@ public class ClassClosure {
 			classFile = new ClassParser(s).parse();
 			String pck = RClass.getPackName(className);
 
-			if (!pck.equals(classFile.getPackageName())) {
-				Debug.D(pck + " " + classFile.getPackageName() + " "
-						+ pck.equals(classFile.getPackageName()));
+			if (! pck.equals(classFile.getPackageName())) {
 				return new String[0];
 			}
 		} catch (IOException e) {
@@ -148,13 +146,9 @@ public class ClassClosure {
 							classFile = new ClassParser(h).parse();
 							String pck = RClass.getPackName(cl[j]);
 
-							if (pck.equals(classFile.getPackageName())
-									&& (!interestedClasses
-											.containsKey(classFile
-													.getClassName()))) {
+							if (pck.equals(classFile.getPackageName()) && (!interestedClasses.containsKey(classFile.getClassName()))) {
 								classesToProcess.add(classFile);
-								interestedClasses.put(classFile.getClassName(),
-										classFile);
+								interestedClasses.put(classFile.getClassName(), classFile);
 							}
 						}
 					}
