@@ -86,10 +86,6 @@ public class Main extends JDialog implements ActionListener {
 
 	private JTextField trace;
 
-	static private final String JAVA = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-
-	static private String JAVAC = "javac";
-
 	// static private final String JUNIT_CORE = "org.junit.runner.JUnitCore";
 	static private final String JUNIT_CORE = "br.jabuti.junitexec.JUnitJabutiCore";
 
@@ -178,21 +174,19 @@ public class Main extends JDialog implements ActionListener {
 		if (!s.endsWith(File.separator))
 			s += File.separator;
 
-		JAVAC = "javac";
-		JAVAC = s + "bin" + File.separator + JAVAC;
-
+		
 		j = new JPanel();
 		fl = (FlowLayout) j.getLayout();
 		fl.setAlignment(FlowLayout.LEFT);
 		j.add(new JLabel("javac"));
 		javac = new JTextField(30);
-		javac.setText(JAVAC);
+		javac.setText(System.getProperty("java.home") + File.separator + "bin" + File.separator + "javac");
 		j.add(javac);
 
-		// j.add(new JLabel("java"));
+		j.add(new JLabel("java"));
 		java = new JTextField(30);
-		java.setText(JAVA);
-		// j.add(java);
+		javac.setText(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
+		j.add(java);
 
 		j.add(new JLabel("Trace file name"));
 		trace = new JTextField(30);
@@ -436,9 +430,10 @@ public class Main extends JDialog implements ActionListener {
 
 			textArea.append("\n\nRunning to get tests set information...\n");
 			textArea.append(java.getText().trim() +
-					" -cp "	+ jabutiLib.getText().trim() + 
+					" -XX:-UseSplitVerifier " +
+					" -cp \""	+ jabutiLib.getText().trim() + "\"" + 
 					" " + JUNIT_CORE +
-					" -cp "	+ classpath +
+					" -cp \""	+ classpath + "\"" +
 					" -tcClass " + tsuit.getText().trim() + "\n");
 
 			File temp = null;
@@ -561,14 +556,15 @@ public class Main extends JDialog implements ActionListener {
 									"Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 
-					textArea.append(java.getText().trim() + " -cp "
-							+ jabutiLib.getText().trim() 
+					textArea.append(java.getText().trim() 
+							+ " -XX:-UseSplitVerifier "
+							+ " -cp \"" + jabutiLib.getText().trim() + "\"" 
 							+ " " + JUNIT_CORE
-							+ " -cp " + classpath
-							+ " -trace " + trace.getText().trim()
+							+ " -cp \"" + classpath + "\""
+							+ " -trace \"" + trace.getText().trim() + "\""
 							+ " -tcClass " + tsuit.getText().trim() + " " + sb.toString()
 							+ "\n");
-
+					
 					PrintStream ps = System.out;
 					try {
 						temp.deleteOnExit();

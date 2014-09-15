@@ -10,41 +10,14 @@
 	<description>Java Bytecode Understanding and Testing</description>
 	<inceptionYear>2006</inceptionYear>
 
+        <distributionManagement>
+                <repository>
+                        <id>IroniaCorp</id>
+                        <url>dav:http://www.ironiacorp.com/repo/maven2</url>
+                </repository>
+        </distributionManagement>
+
 	<dependencies>
-	<!--
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-cli</groupId>
-			<artifactId>commons-cli</artifactId>
-			<version>1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.help</groupId>
-			<artifactId>javahelp</artifactId>
-			<version>2.0.02</version>
-		</dependency>
-
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>3.2</version>
-		</dependency>
-
-
-	-->
 		<dependency>
 			<groupId>javax.xml</groupId>
 			<artifactId>jaxb-impl</artifactId>
@@ -57,21 +30,6 @@
 			<version>2.1</version>
 		</dependency>
 
-<!-- 
-		<dependency>
-			<version>5.2</version>
-			<groupId>org.apache.bcel</groupId>
-			<artifactId>bcel</artifactId>
-		</dependency>
--->
- 		
-
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>bcel</artifactId>
-			<version>2.0.2</version>
-		</dependency>
- 
 		<dependency>
 			<groupId>org.prefuse</groupId>
 			<artifactId>prefuse</artifactId>
@@ -85,14 +43,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.sf.retrotranslator</groupId>
-			<artifactId>retrotranslator-transformer</artifactId>
-			<version>[1.2.9,)</version>
+			<groupId>org.apache.bcel</groupId>
+			<artifactId>bcel</artifactId>
+			<version>6.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>>${project.artifactId}-${project.version}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 
 		<directory>${project.basedir}/target</directory>
 
@@ -152,7 +110,7 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
-			
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -160,8 +118,8 @@
 					<fork>true</fork>
 					<meminitial>128m</meminitial>
 					<maxmem>512m</maxmem>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -170,6 +128,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
+					<descriptors>
+                                                <descriptor>assembly.xml</descriptor>
+                                        </descriptors>
+<!--
 					<archive>
 						<index>true</index>
 						<manifest>
@@ -179,9 +141,18 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+-->
 				</configuration>
+			        <executions>
+					<execution>
+						<phase>package</phase>
+			            		<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
-			
+		
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>javacc-maven-plugin</artifactId>
