@@ -6,15 +6,6 @@ Requirements
 * Java 1.6 or above to run
 
 
-Requirements for system under testing (SUT)
--------------------------------------------
-* Java 1.6 or _below_
-  The library we use to manipulate Java bytecode is not completely compatible
-  with Java 7.0 and above. We could still test when using the option "-XX:-SplitVerifier",
-  but this option is ignored by recent Java 7 and 8 virtual machines. Thus, the only
-  safe choice is to use an application compiled to Java 1.6 or below.
-
-
 Building
 --------
 
@@ -32,5 +23,6 @@ The command 'mvn clean' cleans up all the generated files.
 Running
 -------
 
-java -jar jabuti.jar
+cd target/JaBUTi/
+java -jar JaBUTi.jar
 
