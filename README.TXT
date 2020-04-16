@@ -4,6 +4,7 @@ JaBUTi 1.1
 Requirements
 ------------
 * Java 1.6 or above to run
+* Graphviz (https://www.graphviz.org/)
 
 
 Building
