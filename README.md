@@ -23,7 +23,6 @@ This will build the software within the directory `target`. You will find JaBUTi
 * `java -jar JaBUTi.jar`
 
 
-How to use JaBUTi
------------------
+## How to use JaBUTi
 
 * Tutorial (in Portuguese) (https://docs.google.com/presentation/d/1sWLRY1w_FrFj3232OqYo6gJeGYynbIRvD_0C06t49Xc/edit?usp=sharing)
