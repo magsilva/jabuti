@@ -26,5 +26,5 @@ This will build the software within the directory `target`. You will find JaBUTi
 ## How to use JaBUTi
 
 * [Quick tutorial (in Portuguese)](https://docs.google.com/presentation/d/1sWLRY1w_FrFj3232OqYo6gJeGYynbIRvD_0C06t49Xc/edit?usp=sharing)
-* [Longer tutorial, with videos demonstrating usage](docs/Tutorial-Slides.pdf)
-* [User's guide](docs/UserGuide.pdf)
+* [Longer tutorial, with videos demonstrating usage](doc/Tutorial-Slides.pdf)
+* [User's guide](doc/UserGuide.pdf)
