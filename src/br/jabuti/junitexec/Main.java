@@ -379,7 +379,7 @@ public class Main extends JDialog implements ActionListener {
 					  code.getText().trim() + File.pathSeparator
 					+ jabutiLib.getText().trim() + File.pathSeparator;
 			
-			if (! otherLibs.getText().trim().isEmpty()) {
+			if (otherLibs.getText().trim().length() == 0) {
 				classpath += otherLibs.getText().trim() + File.pathSeparator;
 			}
 
@@ -424,7 +424,7 @@ public class Main extends JDialog implements ActionListener {
 					+ junit.getText().trim() + File.pathSeparator
 					+ jabutiLib.getText().trim() + File.pathSeparator;
 			
-			if (! otherLibs.getText().trim().isEmpty()) {
+			if (otherLibs.getText().trim().length() == 0) {
 				classpath += otherLibs.getText().trim() + File.pathSeparator;
 			}
 
@@ -535,7 +535,7 @@ public class Main extends JDialog implements ActionListener {
 						+ junit.getText().trim() + File.pathSeparator
 						+ jabutiLib.getText().trim() + File.pathSeparator;
 
-				if (! otherLibs.getText().trim().isEmpty()) {
+				if (otherLibs.getText().trim().length() == 0) {
 					classpath += otherLibs.getText().trim() + File.pathSeparator;
 				}
 

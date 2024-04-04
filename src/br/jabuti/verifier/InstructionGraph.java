@@ -43,7 +43,6 @@ import org.apache.bcel.generic.JsrInstruction;
 import org.apache.bcel.generic.MethodGen;
 import org.apache.bcel.generic.RET;
 import org.apache.bcel.generic.Type;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 
 import br.jabuti.graph.Graph;
 import br.jabuti.graph.GraphNode;

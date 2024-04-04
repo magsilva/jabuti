@@ -1,7 +1,8 @@
 # JaBUTi 1.1
 
 ## Requirements
-* Java 1.6 or above to run
+* Java 11 or greater
+* Java 1.5 (yes, you need both!)
 * Graphviz (https://www.graphviz.org/)
 
 
@@ -9,9 +10,11 @@
 
 The easiest way to do it is using Maven, a platform-independent Java-based build tool, by Apache Foundation. You can get it from http://maven.apache.org.
 
+As JaBUTi should be compiled as Java 5 application, you must install the Java 1.5 SDK and configure the path for it in the file toolchains.org.
+
 To build Jabuti, at the prompt type:
 ```
-mvn install
+mvn --global-toolchains toolchains.xml install
 ```
 
 This will build the software within the directory `target`. You will find JaBUTi ready to run in `target/JaBUTi`.

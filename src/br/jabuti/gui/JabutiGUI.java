@@ -1112,7 +1112,7 @@ public class JabutiGUI extends JFrame {
 			}
 
 			cpath = classpathTextArea.getText().trim();
-			if (cpath.isEmpty()) {
+			if (cpath.length() == 0) {
 				JOptionPane.showMessageDialog(
 					null,
 					"The classpath field cannot be empty. Please, provide the complete path necessary to run the application under testing.",
@@ -1554,7 +1554,7 @@ public class JabutiGUI extends JFrame {
 	public JFileChooser projDialogCreate(String name) {
 		JFileChooser fc = new JFileChooser();
 
-		if (name != null && ! name.trim().isEmpty()) {
+		if (name != null && name.trim().length() == 0) {
 			fc.setDialogTitle(name);
 		}
 		
